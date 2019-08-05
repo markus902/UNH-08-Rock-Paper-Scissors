@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+
+    <title>RPS - Epic Version</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <h1>Rock Paper Scissors - Epic Version</h1>
+            </div>
+        </div>
+
+        <div class="row status-display"></div>
+
+        <div class="row">
+            <div class="col s12">
+                <label>
+                    <input id="ready" type="checkbox" />
+                    <span>Ready?</span>
+                </label>
+                <input id="name" type="email" class="validate">
+                <label for="email" id="name-submit">Your name</label>
+                <button id="rock-btn" class="btn" value="1">Rock</button>
+                <button id="paper-btn" class="btn" value="2">Paper</button>
+                <button id="scissors-btn" class="btn" value="3">Scissors</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/javascript/game.js"></script>
+</body>
+
+</html>
