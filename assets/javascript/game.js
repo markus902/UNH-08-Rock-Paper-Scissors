@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 
     let myName = "";
-    let keyPlayer = 0;
+    let myUser;
     let random = Math.floor(Math.random() * 2)
 
 
@@ -26,30 +26,42 @@ $(document).ready(function () {
     //     numberOfPlayers = snapshot.numChildren();
     // })
 
-    //Database listener
-    function checkUser() {
+    //Assign Users
+
+
+
+    //Putting our choices
+    database.ref("/user1").on("value", function (snapshot) {
+        $("#user1").text(snapshot.val().username);
+    });
+    database.ref("/user2").on("value", function (snapshot) {
+        $("#user2").text(snapshot.val().username);
+    });
+
+    //Getting players name and creating user in database
+    $("#name-submit").on("click", function () {
+        myName = $("#name").val();
+
         database.ref("/user1").once("value", function (snapshot) {
-            var a = snapshot.child("username").val();
-            console.log(a)
-            if (a == "none") {
+            var empty = snapshot.child("username").val();
+            console.log(empty)
+            if (empty == "none") {
                 database.ref("/user1").update({
                     username: myName
                 });
                 console.log("You are user 1")
+                myUser = "/user1";
+                $("#name-submit").off();
+
             } else {
                 database.ref("/user2").update({
                     username: myName
                 });
                 console.log("You are user 2")
-            }
+                myUser = "/user2";
+                $("#name-submit").off();
+            };
         });
-    }
-
-    //Getting players name and creating user in database
-    $("#name-submit").on("click", function () {
-        myName = $("#name").val();
-        checkUser();
-        // addUser(myName);
     });
 
     //clearing player when disconnected
@@ -66,6 +78,14 @@ $(document).ready(function () {
     $(".btn").on("click", function () {
         console.log($(this).attr("value"));
         choiceLocal = $(this).attr("value");
+
+        database.ref(myUser).update({
+            choice: choiceLocal
+        });
+
+        // database.ref("/user1").once("value", function (snapshot) {
+        //     console.log(snapshot.val().choice);
+        // });
     });
 
 
