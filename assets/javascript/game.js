@@ -18,43 +18,49 @@ $(document).ready(function () {
 
     let myName = "";
     let keyPlayer = 0;
-    let keyOpponent;
-    let numberOfPlayers;
-    let opponent;
+    let random = Math.floor(Math.random() * 2)
 
-    //Function to create new user and retreive new key
-    let addMe = function writeUserData(name) {
-        keyPlayer = database.ref("/users").push({
-            username: name,
-            choice: "none",
-        }).getKey();
-        console.log("Key: " + keyPlayer);
+
+    // //Live stream how many players are online
+    // let countPlayers = database.ref("/users").on("value", function (snapshot) {
+    //     numberOfPlayers = snapshot.numChildren();
+    // })
+
+    //Database listener
+    function checkUser() {
+        database.ref("/user1").once("value", function (snapshot) {
+            var a = snapshot.child("username").val();
+            console.log(a)
+            if (a == "none") {
+                database.ref("/user1").update({
+                    username: myName
+                });
+                console.log("You are user 1")
+            } else {
+                database.ref("/user2").update({
+                    username: myName
+                });
+                console.log("You are user 2")
+            }
+        });
     }
 
-    //Live stream how many players are online
-    let countPlayers = database.ref("/users").on("value", function (snapshot) {
-        numberOfPlayers = snapshot.numChildren();
-    })
-
-    function getOpponent() {
-        //Database listener
-        database.ref().on("value", function (snapshot) {
-                opponent = snapshot.val();
-                console.log(opponent)
-            },
-            function (errorObject) {
-                console.log("The read failed: " + errorObject.code);
-            });
-    }
     //Getting players name and creating user in database
     $("#name-submit").on("click", function () {
         myName = $("#name").val();
-        addMe(myName);
-        getOpponent();
+        checkUser();
+        // addUser(myName);
     });
 
     //clearing player when disconnected
-    database.ref("users/").onDisconnect().remove();
+    database.ref("user1/").onDisconnect().set({
+        username: "none",
+        choice: "none"
+    });
+    database.ref("user2/").onDisconnect().set({
+        username: "none",
+        choice: "none"
+    });
 
     //Click events for RPS buttons
     $(".btn").on("click", function () {
