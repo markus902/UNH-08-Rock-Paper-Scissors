@@ -48,8 +48,6 @@ $(document).ready(function () {
         if (random == 2 && myUser == "/user2") {
             $(".game-button").css("display", "inline");
         }
-
-
     });
 
 
@@ -76,9 +74,10 @@ $(document).ready(function () {
                 console.log("You are user 2")
                 myUser = "/user2";
                 $("#name").css("display", "none");
+                $("#name-submit").css("display", "none");
                 database.ref().update({
                     status: true
-                })
+                });
             };
         });
     });
