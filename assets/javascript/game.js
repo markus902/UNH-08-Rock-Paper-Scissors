@@ -17,31 +17,50 @@ $(document).ready(function () {
 
 
     let myName = "";
-    let userPath = firebase.database().ref("users")
-    let playerNumber;
-    let choiceP1 = "";
-    let choiceP2 = "";
-    let key = 0;
+    let keyPlayer = 0;
+    let keyOpponent;
+    let numberOfPlayers;
+    let opponent;
 
-    console.log("Userpath " + userPath);
-
-    //On page visit create new user and retreive new key
+    //Function to create new user and retreive new key
     let addMe = function writeUserData(name) {
-        userPath.push({
+        keyPlayer = database.ref("/users").push({
             username: name,
-            choice: 0
-        });
-        key = userPath.push().getKey();
-        console.log("Key: " + key);
+            choice: "none",
+        }).getKey();
+        console.log("Key: " + keyPlayer);
     }
 
+    //Live stream how many players are online
+    let countPlayers = database.ref("/users").on("value", function (snapshot) {
+        numberOfPlayers = snapshot.numChildren();
+    })
+
+    function getOpponent() {
+        //Database listener
+        database.ref().on("value", function (snapshot) {
+                opponent = snapshot.val();
+                console.log(opponent)
+            },
+            function (errorObject) {
+                console.log("The read failed: " + errorObject.code);
+            });
+    }
     //Getting players name and creating user in database
     $("#name-submit").on("click", function () {
         myName = $("#name").val();
-        console.log(myName);
         addMe(myName);
+        getOpponent();
     });
 
+    //clearing player when disconnected
+    database.ref("users/").onDisconnect().remove();
+
+    //Click events for RPS buttons
+    $(".btn").on("click", function () {
+        console.log($(this).attr("value"));
+        choiceLocal = $(this).attr("value");
+    });
 
 
     //Which player am I?
@@ -64,33 +83,6 @@ $(document).ready(function () {
     //         }
     //         console.log(playerNumber);
     //     });
-
-
-    //database listener
-    database.ref().on("value", function (snapshot) {
-            console.log(snapshot.val());
-        },
-        function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-    //clearing player when disconnected
-    database.ref().onDisconnect().update({
-        onlineP1: false,
-        onlineP2: false
-    });
-
-
-    //Click events for RPS buttons
-    $(".btn").on("click", function () {
-        console.log($(this).attr("value"));
-        choiceLocal = $(this).attr("value");
-
-
-
-    });
-
-
 
 
     // switch () {
