@@ -19,16 +19,19 @@ $(document).ready(function () {
     let myName = "";
     let myUser;
     let status;
-    let transactionCounter = 0;
     let random = Math.floor((Math.random() * 2) + 1);
     console.log("Random: " + random);
 
-    //Setting beginning User in database
-    database.ref().update({
-        starter: random
-    });
+    // //Live stream how many players are online
+    // let countPlayers = database.ref("/users").on("value", function (snapshot) {
+    //     numberOfPlayers = snapshot.numChildren();
+    // })
 
-    //Database listeners for 2 users that put choices in html
+    //Assign Users
+
+
+
+    //Putting out choices
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
     });
@@ -45,7 +48,10 @@ $(document).ready(function () {
         if (random == 2 && myUser == "/user2") {
             $(".game-button").css("display", "inline");
         }
+
+
     });
+
 
     //Getting players name and creating user in database
     $("#name-submit").on("click", function () {
@@ -99,18 +105,12 @@ $(document).ready(function () {
             choice: choiceLocal
         });
 
+        database.ref("/user1").once("value", function (snapshot) {
+            console.log(snapshot.val().choice);
+        });
+        $("#status-display").text()
 
-
-        // database.ref("/user1").once("value", function () {
-        //     transactionCounter++;
-        //     console.log("Count: " + transactionCounter);
-        // });
-        // database.ref("/user2").once("value", function () {
-        //     transactionCounter++;
-        //     console.log("Count: " + transactionCounter);
-        // });
-
-        $(".game-button").css("display", "none");
+        $(".game-button").css("display", "none")
 
 
 
