@@ -18,24 +18,33 @@ $(document).ready(function () {
 
     let myName = "";
     let myUser;
-    let random = Math.floor(Math.random() * 2)
+    let status;
+    let transactionCounter = 0;
+    let random = Math.floor((Math.random() * 2) + 1);
+    console.log("Random: " + random);
 
+    //Setting beginning User in database
+    database.ref().update({
+        starter: random
+    });
 
-    // //Live stream how many players are online
-    // let countPlayers = database.ref("/users").on("value", function (snapshot) {
-    //     numberOfPlayers = snapshot.numChildren();
-    // })
-
-    //Assign Users
-
-
-
-    //Putting our choices
+    //Database listeners for 2 users that put choices in html
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
     });
     database.ref("/user2").on("value", function (snapshot) {
         $("#user2").text(snapshot.val().username);
+    });
+    database.ref().on("value", function (snapshot) {
+        status = snapshot.val().status;
+        console.log(status);
+        if (random == 1 && myUser == "/user1") {
+            $(".game-button").css("display", "inline");
+        };
+
+        if (random == 2 && myUser == "/user2") {
+            $(".game-button").css("display", "inline");
+        }
     });
 
     //Getting players name and creating user in database
@@ -51,7 +60,8 @@ $(document).ready(function () {
                 });
                 console.log("You are user 1")
                 myUser = "/user1";
-                $("#name-submit").off();
+                $("#name-submit").css("display", "none");
+                $("#name").css("display", "none");
 
             } else {
                 database.ref("/user2").update({
@@ -59,19 +69,25 @@ $(document).ready(function () {
                 });
                 console.log("You are user 2")
                 myUser = "/user2";
-                $("#name-submit").off();
+                $("#name").css("display", "none");
+                database.ref().update({
+                    status: true
+                })
             };
         });
     });
 
     //clearing player when disconnected
-    database.ref("user1/").onDisconnect().set({
+    database.ref("/user1").onDisconnect().set({
         username: "none",
         choice: "none"
     });
-    database.ref("user2/").onDisconnect().set({
+    database.ref("/user2").onDisconnect().set({
         username: "none",
         choice: "none"
+    });
+    database.ref().onDisconnect().update({
+        status: false
     });
 
     //Click events for RPS buttons
@@ -83,9 +99,21 @@ $(document).ready(function () {
             choice: choiceLocal
         });
 
-        // database.ref("/user1").once("value", function (snapshot) {
-        //     console.log(snapshot.val().choice);
+
+
+        // database.ref("/user1").once("value", function () {
+        //     transactionCounter++;
+        //     console.log("Count: " + transactionCounter);
         // });
+        // database.ref("/user2").once("value", function () {
+        //     transactionCounter++;
+        //     console.log("Count: " + transactionCounter);
+        // });
+
+        $(".game-button").css("display", "none");
+
+
+
     });
 
 
