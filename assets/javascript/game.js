@@ -30,7 +30,7 @@ $(document).ready(function () {
 
     //Assign Users
 
-
+    $(".game-button").css("display", "none");
 
     //Putting out choices
     database.ref("/user1").on("value", function (snapshot) {
