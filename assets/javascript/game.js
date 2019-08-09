@@ -19,6 +19,7 @@ $(document).ready(function () {
     let myName = "";
     let myUser;
     let status;
+    let turn = false;
     let random = 1 //Math.floor((Math.random() * 2) + 1);
     console.log("Random: " + random);
 
@@ -42,6 +43,8 @@ $(document).ready(function () {
             database.ref("/user2").update({
                 turn: true
             })
+        } else {
+            $(".game-button").css("display", "none");
         }
     });
     database.ref("/user2").on("value", function (snapshot) {
@@ -54,6 +57,8 @@ $(document).ready(function () {
             database.ref("/user1").update({
                 turn: true
             })
+        } else {
+            $(".game-button").css("display", "none");
         }
     });
 
@@ -68,7 +73,7 @@ $(document).ready(function () {
             if (empty == "none") {
                 database.ref("/user1").update({
                     username: myName,
-                    turn: true
+                    turn: false
                 });
                 console.log("You are user 1")
                 myUser = "/user1";
