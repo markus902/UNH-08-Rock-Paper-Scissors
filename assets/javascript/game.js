@@ -19,7 +19,7 @@ $(document).ready(function () {
     let myName = "";
     let myUser;
     let status;
-    let random = Math.floor((Math.random() * 2) + 1);
+    let random = 1 //Math.floor((Math.random() * 2) + 1);
     console.log("Random: " + random);
 
     // //Live stream how many players are online
@@ -34,19 +34,26 @@ $(document).ready(function () {
     //Putting out choices
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
+        if (snapshot.val().turn) {
+            $(".game-button").css("display", "inline");
+            database.ref("/user1").update({
+                turn: false
+            })
+            database.ref("/user2").update({
+                turn: true
+            })
+        }
     });
     database.ref("/user2").on("value", function (snapshot) {
         $("#user2").text(snapshot.val().username);
-    });
-    database.ref().on("value", function (snapshot) {
-        status = snapshot.val().status;
-        console.log(status);
-        if (random == 1 && myUser == "/user1") {
+        if (snapshot.val().turn) {
             $(".game-button").css("display", "inline");
-        };
-
-        if (random == 2 && myUser == "/user2") {
-            $(".game-button").css("display", "inline");
+            database.ref("/user2").update({
+                turn: false
+            })
+            database.ref("/user1").update({
+                turn: true
+            })
         }
     });
 
@@ -60,7 +67,8 @@ $(document).ready(function () {
             console.log(empty)
             if (empty == "none") {
                 database.ref("/user1").update({
-                    username: myName
+                    username: myName,
+                    turn: true
                 });
                 console.log("You are user 1")
                 myUser = "/user1";
@@ -69,7 +77,8 @@ $(document).ready(function () {
 
             } else {
                 database.ref("/user2").update({
-                    username: myName
+                    username: myName,
+                    turn: false
                 });
                 console.log("You are user 2")
                 myUser = "/user2";
