@@ -19,49 +19,36 @@ $(document).ready(function () {
     let myName = "";
     let myUser;
     let status;
-    let turn = false;
-    let random = 1 //Math.floor((Math.random() * 2) + 1);
+    let choiceUser1;
+    let choiceUser2;
+    let random = 2 //Math.floor((Math.random() * 2) + 1);
     console.log("Random: " + random);
-
-    // //Live stream how many players are online
-    // let countPlayers = database.ref("/users").on("value", function (snapshot) {
-    //     numberOfPlayers = snapshot.numChildren();
-    // })
 
     //Assign Users
 
     $(".game-button").css("display", "none");
 
     //Putting out choices
+
+    // database.ref().on("value", function (snapshot) {
+    //     $("#user1").text(snapshot.val().status);
+    // });
+
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
-        if (snapshot.val().turn) {
-            $(".game-button").css("display", "inline");
-            database.ref("/user1").update({
-                turn: false
-            })
-            database.ref("/user2").update({
-                turn: true
-            })
-        } else {
-            $(".game-button").css("display", "none");
+        if (snapshot.val().choice != "none") {
+            choiceUser1 = snapshot.val().choice;
         }
+        // choiceUser1 = choiceUser1.toString()
+        // console.log(choiceUser1);
     });
     database.ref("/user2").on("value", function (snapshot) {
         $("#user2").text(snapshot.val().username);
-        if (snapshot.val().turn) {
-            $(".game-button").css("display", "inline");
-            database.ref("/user2").update({
-                turn: false
-            })
-            database.ref("/user1").update({
-                turn: true
-            })
-        } else {
-            $(".game-button").css("display", "none");
+        if (snapshot.val().turn == "none") {
+            choiceUser2 = snapshot.val().choice;
         }
+        // choiceUser2 = choiceUser2.toString();
     });
-
 
     //Getting players name and creating user in database
     $("#name-submit").on("click", function () {
@@ -79,7 +66,6 @@ $(document).ready(function () {
                 myUser = "/user1";
                 $("#name-submit").css("display", "none");
                 $("#name").css("display", "none");
-
             } else {
                 database.ref("/user2").update({
                     username: myName,
@@ -91,126 +77,93 @@ $(document).ready(function () {
                 $("#name-submit").css("display", "none");
                 database.ref().update({
                     status: true
-                });
-            };
+                })
+            }
+
         });
     });
 
     //clearing player when disconnected
     database.ref("/user1").onDisconnect().set({
         username: "none",
-        choice: "none"
+        choice: "none",
+        turn: false
     });
     database.ref("/user2").onDisconnect().set({
         username: "none",
-        choice: "none"
+        choice: "none",
+        turn: false
     });
     database.ref().onDisconnect().update({
-        status: false
+        status: false,
+        turn: false
     });
 
     //Click events for RPS buttons
     $(".btn").on("click", function () {
         console.log($(this).attr("value"));
-        choiceLocal = $(this).attr("value");
+        let choiceLocal = $(this).attr("value");
 
         database.ref(myUser).update({
             choice: choiceLocal
         });
-
-        database.ref("/user1").once("value", function (snapshot) {
-            console.log(snapshot.val().choice);
+        database.ref().update({
+            status: false
         });
-        $("#status-display").text()
-
         $(".game-button").css("display", "none")
+        game();
+    });
+
+    //See if both made a choice
+
+    database.ref().on("value", function (snapshot) {
+
+        console.log(snapshot.val().status)
+        if (snapshot.val().status) {
+            $(".game-button").css("display", "inline");
 
 
+        }
 
     });
 
+    function game() {
+        let desc;
+        if (choiceUser1 != undefined && choiceUser2 == undefined) {
+            console.log(choiceUser1 + choiceUser2);
 
-    //Which player am I?
-    // database.ref().once("value")
-    //     .then(function (snapshot) {
-    //         var key1 = snapshot.val().onlineP1;
-    //         var key2 = snapshot.val().onlineP2;
-    //         if (key1 == false) {
-    //             playerNumber = 1;
-    //             database.ref().update({
-    //                 onlineP1: true
-    //             });
-    //         } else if (key2 == false) {
-    //             playerNumber = 2
-    //             database.ref().update({
-    //                 onlineP2: false
-    //             });
-    //         } else {
-    //             console.log("Game full");
-    //         }
-    //         console.log(playerNumber);
-    //     });
+            switch (choiceUser1 + choiceUser2) {
 
-
-    // switch () {
-
-    //     case '11':
-    //         computerScore = 1;
-    //         playerScore = 1;
-    //         console.log("Both win!");
-    //         desc = "Both win!";
-    //         break;
-    //     case '22':
-    //         computerScore = 1;
-    //         playerScore = 1;
-    //         console.log("Both win!");
-    //         desc = "Both win!";
-    //         break;
-    //     case '33':
-    //         computerScore = 1;
-    //         playerScore = 1;
-    //         console.log("Both win!");
-    //         desc = "Both win!";
-    //         break;
-    //     case '12':
-    //         computerScore = 0;
-    //         playerScore = 1;
-    //         console.log("Player wins!");
-    //         desc = "Player wins!";
-    //         break;
-    //     case '21':
-    //         computerScore = 1;
-    //         playerScore = 0;
-    //         console.log("Computer wins!");
-    //         desc = "Computer wins!";
-    //         break;
-    //     case '13':
-    //         computerScore = 1;
-    //         playerScore = 0;
-    //         console.log("Computer wins!");
-    //         desc = "Computer wins!";
-    //         break;
-    //     case '31':
-    //         computerScore = 0;
-    //         playerScore = 1;
-    //         console.log("Player wins!");
-    //         desc = "Player wins!";
-    //         break;
-    //     case '23':
-    //         computerScore = 0;
-    //         playerScore = 1;
-    //         console.log("Player wins!");
-    //         desc = "Player wins!";
-    //         break;
-    //     case '32':
-    //         computerScore = 1;
-    //         playerScore = 0;
-    //         console.log("Computer wins!");
-    //         desc = "Computer wins!";
-    //         break;
-    // }
-
-    // $("#paper-btn").on("click", () => console.log("paper"));
-    // $("#scissors-btn").on("click", () => console.log("scissors"));
-
+                case '11':
+                    desc = "Both win!";
+                    console.log("tie")
+                    break;
+                case '22':
+                    desc = "Both win!";
+                    break;
+                case '33':
+                    desc = "Both win!";
+                    break;
+                case '12':
+                    desc = "Player wins!";
+                    break;
+                case '21':
+                    desc = "Computer wins!";
+                    break;
+                case '13':
+                    desc = "Computer wins!";
+                    break;
+                case '31':
+                    desc = "Player wins!";
+                    break;
+                case '23':
+                    desc = "Player wins!";
+                    break;
+                case '32':
+                    desc = "Computer wins!";
+                    break;
+            }
+            console.log(desc)
+        }
+    }
 });
