@@ -22,7 +22,7 @@ $(document).ready(function () {
         let choiceUser2;
         let winsUser1 = 0;
         let winsUser2 = 0;
-        let random = 2 //Math.floor((Math.random() * 2) + 1);
+        let random = Math.floor((Math.random() * 2) + 1);
         console.log("Random: " + random);
 
 
@@ -99,7 +99,7 @@ $(document).ready(function () {
 
 
         //Click events for RPS buttons
-        $(".btn").on("click", function () {
+        $(".game-btn").on("click", function addbuttons() {
             console.log($(this).attr("value"));
             let choiceLocal = $(this).attr("value");
 
