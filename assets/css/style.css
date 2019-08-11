@@ -1,0 +1,39 @@
+.game-button {
+    display: none;
+}
+
+body {
+    background-color: white;
+    background: url(../../assets/images/background.png);
+}
+
+.container {
+    background: white;
+    height: 100%;
+    margin-top: 10px;
+}
+
+h1 {
+    font-family: 'Luckiest Guy', cursive;
+}
+
+.output {
+    font-size: 1.2rem;
+    font-family: 'Didact Gothic', sans-serif;
+    text-align: left;
+}
+
+.output-player {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 1.5rem;
+}
+
+
+#chat-window {
+    background: darkgray;
+    width: 90%;
+    height: 300px;
+    scroll-behavior: smooth;
+}
+
+;
