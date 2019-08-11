@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Didact+Gothic|Luckiest+Guy&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="./assets/css/style.css">
@@ -19,32 +21,79 @@
     <div class="container">
         <div class="row">
             <div class="col s12 center-align">
-                <h1>Rock Paper Scissors - Epic Version</h1>
-            </div>
-        </div>
-
-        <div class="row" id="status-display">
-            <div class="col s6 m6 l6" id="user1"></div>
-            <div class="col s6 m6 l6" id="user2"></div>
-        </div>
-
-        <div class="row">
-            <div class="col s12">
-
-                <input id="name" type="email" class="validate">
-                <button for="email" id="name-submit" class="waves-effect waves-light btn">Your name</button>
+                <h1>Rock - Paper - Scissors</h1>
             </div>
         </div>
         <div class="row">
-            <div class="col s12 center-align">
-                <button id="rock-btn" class="btn game-button" value="1">Rock</button>
-                <button id="paper-btn" class="btn game-button" value="2">Paper</button>
-                <button id="scissors-btn" class="btn game-button" value="3">Scissors</button>
+            <div class="col m6">
+                <div class="row" id="status-display">
+                    <div class="col s6 m6 l6" id="">
+                        <span id="user1" class="output-player"></span>
+                        <br>
+                        <span id="score1" class="output"></span>
+                    </div>
+                    <div class="col s6 m6 l6" id="">
+                        <span id="user2" class="output-player"></span>
+                        <br>
+                        <span id="score2" class="output"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+
+                        <input id="name" type="email" class="validate">
+                        <button for="email" id="name-submit" class="waves-effect waves-light btn">Your name</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <div class="game-button">
+                            <!-- <img src="./assets/images/rock.jpg" alt="" height="75px" width="auto"> -->
+                            <button id="rock-btn" class="btn game-button" value="1">Rock</button>
+                        </div>
+                        <div class="game-button">
+                            <button id="paper-btn" class="btn game-button" value="2">Paper</button>
+                            <!-- <img src="./assets/images/paper.jpg" alt="" height="75px" width="auto"> -->
+                        </div>
+                        <div class="game-button">
+                            <button id="scissors-btn" class="btn game-button" value="3">Scissors</button>
+                            <!-- <img src="./assets/images/scissors.jpeg" alt="" height="75px" width="auto"> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6 m6 l6">
+                <div class="row">
+                    <div id="chat-window" class="">
+                        <h4 class="center-align">Chat</h6>
+                            <table id="chat-table">
+
+                            </table>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <form class="col s8">
+                        <div class="row">
+                            <div class="input-field s6">
+                                <i class="material-icons prefix">mode_edit</i>
+                                <textarea id="icon_prefix2" class="materialize-textarea chat-line"></textarea>
+                                <label for="icon_prefix2"></label>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+
             </div>
         </div>
-    </div>
 
-    <script src="./assets/javascript/game.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+        <script src="./assets/javascript/game.js"></script>
+
 </body>
 
 </html>
