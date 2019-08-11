@@ -15,7 +15,7 @@ $(document).ready(function () {
 
     var database = firebase.database();
 
-    let myName = "";
+    let myName;
     let myUser;
     let choiceUser1;
     let choiceUser2;
@@ -54,7 +54,7 @@ $(document).ready(function () {
         database.ref("/user1").once("value", function (snapshot) {
             var empty = snapshot.child("username").val();
             console.log(empty)
-            if (empty == "none") {
+            if (empty == "Waiting for player.") {
                 database.ref("/user1").update({
                     username: myName,
                     wins: 0,
@@ -64,12 +64,7 @@ $(document).ready(function () {
                 myUser = "/user1";
                 $("#name-submit").css("display", "none");
                 $("#name").css("display", "none");
-                database.ref("/user1").onDisconnect().set({
-                    username: "none",
-                    choice: "none",
-                    wins: 0,
-                    status: false
-                });
+
             } else {
                 database.ref("/user2").update({
                     username: myName,
@@ -81,14 +76,20 @@ $(document).ready(function () {
                 $("#name").css("display", "none");
                 $("#name-submit").css("display", "none");
                 database.ref("/user2").onDisconnect().set({
-                    username: "none",
+                    username: "Waiting for player.",
+                    choice: "none",
+                    wins: 0,
+                    status: false
+                });
+                database.ref("/user1").onDisconnect().set({
+                    username: "Waiting for player.",
                     choice: "none",
                     wins: 0,
                     status: false
                 });
                 database.ref().update({
                     status: true
-                })
+                });
             }
         });
     });
@@ -99,14 +100,15 @@ $(document).ready(function () {
     });
 
 
+
     //Click events for RPS buttons
-    $(".btn").on("click", function () {
+    $(".game-btn").on("click", function () {
         let choiceLocal = $(this).attr("value");
         database.ref(myUser).update({
             choice: choiceLocal
         });
 
-        $(".btn").css("display", "none")
+        $(".game-btn").css("display", "none")
         game()
     });
 
@@ -119,6 +121,7 @@ $(document).ready(function () {
         }
     });
 
+    //game logic
     function game(desc) {
         if (choiceUser1 != undefined && choiceUser2 != undefined) {
             console.log(choiceUser1 + choiceUser2);
@@ -192,4 +195,43 @@ $(document).ready(function () {
         choiceUser2 = undefined;
 
     }
+    //chat function
+    document.onkeyup = function (key) {
+        let checkInput = key
+        if (checkInput.keyCode == 13 && myName != undefined) {
+            console.log($(".chat-line").val());
+            database.ref("/chat").push({
+                username: myName,
+                message: $(".chat-line").val(),
+                timeAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+    };
+    database.ref("/chat").orderByChild("dateAdded").limitToLast(1).on("child_added", function (snapshot) {
+        console.log("listened");
+        console.log(snapshot.val().username);
+        console.log(snapshot.val().message);
+        console.log(snapshot.val().timeAdded);
+
+        let newMessage = $("<td>");
+        let newName = $("<td>");
+        let newTime = $("<td>");
+
+        newMessage.css("text-align", "left");
+
+        newMessage.text(snapshot.val().message)
+        newName.text(snapshot.val().username)
+        newTime.text(snapshot.val().timeAdded)
+
+        let newRow = $("<tr>")
+            .append(newName)
+            .append(newMessage)
+            .append(moment(snapshot.val().timeAdded).format('LT'));
+
+        $("#chat-table").append(newRow);
+
+    })
+
+
+    // console.log($(".chatline").val());
 });
