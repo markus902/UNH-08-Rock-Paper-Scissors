@@ -10,7 +10,7 @@ body {
 .container {
     background: white;
     height: 100%;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 h1 {
@@ -30,10 +30,13 @@ h1 {
 
 
 #chat-window {
-    background: darkgray;
+    background: rgb(223, 159, 159);
     width: 90%;
     height: 300px;
     scroll-behavior: smooth;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    border-radius: 20px
 }
 
 ;
