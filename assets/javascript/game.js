@@ -15,7 +15,7 @@ $(document).ready(function () {
 
     var database = firebase.database();
 
-    let myName;
+    let myName = "No name";
     let myUser;
     let choiceUser1;
     let choiceUser2;
@@ -99,6 +99,7 @@ $(document).ready(function () {
         wins: 0,
         status: false
     });
+    database.ref("/chat").onDisconnect().set({});
 
 
     //Click events for RPS buttons
@@ -111,7 +112,10 @@ $(document).ready(function () {
             status: true
         })
 
+        //Hide game button after choice was made
         $(".game-button").css("display", "none");
+
+        //Only fire game logic if both users made their choice
         if (statusUser1 == true && statusUser2 == true) {
             setTimeout(function () {
                 game()
@@ -134,7 +138,7 @@ $(document).ready(function () {
         choiceLocal = undefined;
     });
 
-    //See if both made a choice
+    //Listen if both made a choice and hide or show buttons
     database.ref().on("value", function (snapshot) {
         if (snapshot.val().status) {
             $(".game-button").css("display", "inline");
@@ -204,10 +208,13 @@ $(document).ready(function () {
     }
 
     // chat function
+
+    // chat function
     document.onkeyup = function (key) {
         let checkInput = key
-        if (checkInput.keyCode == 13 && myName != undefined) {
+        if (checkInput.keyCode == 13) {
             console.log($(".chat-line").val());
+
             database.ref("/chat").push({
                 username: myName,
                 message: $(".chat-line").val(),
@@ -224,18 +231,18 @@ $(document).ready(function () {
 
         newMessage.css("text-align", "left");
 
-        newMessage.text(snapshot.val().message)
-        newName.text(snapshot.val().username)
-        newTime.text(snapshot.val().timeAdded)
+        newName.text(snapshot.val().username);
+        newMessage.text(snapshot.val().message);
+        newTime.text(moment(snapshot.val().timeAdded).format('LT'));
 
         let newRow = $("<tr>")
             .append(newName)
             .append(newMessage)
-            .append(moment(snapshot.val().timeAdded).format('LT'));
+            .append(newTime);
         $("#chat-table").append(newRow);
 
+        $('#textarea1').val('');
+        M.textareaAutoResize($('#textarea1'));
     })
 
-
-    console.log($(".chatline").val());
 });
