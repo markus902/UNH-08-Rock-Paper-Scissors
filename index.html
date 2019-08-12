@@ -19,6 +19,7 @@
 
 <body>
     <div class="container">
+
         <div class="row">
             <div class="col s12 center-align">
                 <h1>Rock - Paper - Scissors</h1>
@@ -41,8 +42,16 @@
                 <div class="row">
                     <div class="col s12">
 
-                        <input id="name" type="email" class="validate">
-                        <button for="email" id="name-submit" class="waves-effect waves-light btn">Your name</button>
+                        <div class="input-field col s12 center-align">
+                            <textarea id="textarea1" class="materialize-textarea name"></textarea>
+                            <label for="textarea1" class="name">Your Name</label>
+                        </div>
+                        <button for="email" id="name-submit"
+                            class="waves-effect waves-light btn">Submit</button><br><br><br>
+                        <div id="disconnect">
+                            <h5>The other player got disconnected. Please click to wait for a new opponent.</h5>
+                            <br><button id="reload" class="waves-effect waves-light btn">New Game</button>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

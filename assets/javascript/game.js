@@ -24,6 +24,10 @@ $(document).ready(function () {
     let statusUser1;
     let statusUser2;
 
+    database.ref().update({
+        disconnect: false
+    });
+
     //Database checking for which choice was made and keeps track of wins
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
@@ -51,11 +55,10 @@ $(document).ready(function () {
 
     //Getting players name and creating user in database
     $("#name-submit").on("click", function () {
-        myName = $("#name").val();
+        myName = $(".name").val();
 
         database.ref("/user1").once("value", function (snapshot) {
             var empty = snapshot.child("username").val();
-            console.log(empty)
             if (empty == "Waiting for player.") {
                 database.ref("/user1").update({
                     username: myName,
@@ -64,7 +67,7 @@ $(document).ready(function () {
                 console.log("You are user 1")
                 myUser = "/user1";
                 $("#name-submit").css("display", "none");
-                $("#name").css("display", "none");
+                $(".name").css("display", "none");
 
             } else {
                 database.ref("/user2").update({
@@ -73,33 +76,41 @@ $(document).ready(function () {
                 });
                 console.log("You are user 2")
                 myUser = "/user2";
-                $("#name").css("display", "none");
+                $(".name").css("display", "none");
                 $("#name-submit").css("display", "none");
 
                 database.ref().update({
-                    status: true
+                    status: true,
+                    disconnect: false
                 });
             }
         });
     });
 
-    //clearing player when disconnected
+    //Reset when player disconnected
     database.ref().onDisconnect().update({
         status: false,
     });
-    database.ref("/user1").onDisconnect().set({
+    database.ref("/user1").onDisconnect().update({
         username: "Waiting for player.",
         choice: "none",
         wins: 0,
-        status: false
+        status: false,
+        disconnect: true
+
     });
-    database.ref("/user2").onDisconnect().set({
+    database.ref("/user2").onDisconnect().update({
         username: "Waiting for player.",
         choice: "none",
         wins: 0,
-        status: false
+        status: false,
+        disconnect: true
     });
     database.ref("/chat").onDisconnect().set({});
+
+    database.ref().onDisconnect().update({
+        disconnect: true
+    });
 
 
     //Click events for RPS buttons
@@ -109,7 +120,8 @@ $(document).ready(function () {
             choice: choiceLocal
         });
         database.ref(myUser).update({
-            status: true
+            status: true,
+
         })
 
         //Hide game button after choice was made
@@ -145,13 +157,20 @@ $(document).ready(function () {
         } else {
             $(".game-button").css("display", "none");
         }
+        if (snapshot.val().disconnect) {
+            $("#disconnect").css("display", "inline");
+            $("#reload").on("click", function () {
+                location.reload();
+            })
+        } else {
+            $("#disconnect").css("display", "none");
+        }
+
+
     });
 
     //game logic
     function game(desc) {
-        console.log("status 1" + statusUser1);
-        console.log("status 2" + statusUser2);
-
         switch (choiceUser1 + choiceUser2) {
             case '11':
                 desc = "tie!";
@@ -213,7 +232,6 @@ $(document).ready(function () {
     document.onkeyup = function (key) {
         let checkInput = key
         if (checkInput.keyCode == 13) {
-            console.log($(".chat-line").val());
 
             database.ref("/chat").push({
                 username: myName,
@@ -224,7 +242,6 @@ $(document).ready(function () {
         }
     };
     database.ref("/chat").orderByChild("dateAdded").limitToLast(1).on("child_added", function (snapshot) {
-
         let newMessage = $("<td>");
         let newName = $("<td>");
         let newTime = $("<td>");
