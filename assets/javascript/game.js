@@ -116,8 +116,6 @@ $(document).ready(function () {
             setTimeout(function () {
                 game()
             }, 1000)
-            winsUser1 = 0;
-            winsUser2 = 0;
             setTimeout(function () {
                 database.ref().update({
                     status: true
