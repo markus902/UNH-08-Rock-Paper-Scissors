@@ -28,6 +28,7 @@ $(document).ready(function () {
     database.ref("/user1").on("value", function (snapshot) {
         $("#user1").text(snapshot.val().username);
         winsUser1 = snapshot.val().wins;
+        statusUser1 = snapshot.val().status;
         if (snapshot.val().choice != "none") {
             choiceUser1 = snapshot.val().choice;
             statusUser1 = snapshot.val().status;
@@ -38,7 +39,8 @@ $(document).ready(function () {
 
     database.ref("/user2").on("value", function (snapshot) {
         $("#user2").text(snapshot.val().username);
-        winsUser1 = snapshot.val().wins;
+        winsUser2 = snapshot.val().wins;
+        statusUser2 = snapshot.val().status;
         if (snapshot.val().choice != "none") {
             choiceUser2 = snapshot.val().choice;
             statusUser2 = snapshot.val().status;
@@ -58,7 +60,6 @@ $(document).ready(function () {
                 database.ref("/user1").update({
                     username: myName,
                     wins: 0,
-                    status: true
                 });
                 console.log("You are user 1")
                 myUser = "/user1";
@@ -69,24 +70,12 @@ $(document).ready(function () {
                 database.ref("/user2").update({
                     username: myName,
                     wins: 0,
-                    status: true
                 });
                 console.log("You are user 2")
                 myUser = "/user2";
                 $("#name").css("display", "none");
                 $("#name-submit").css("display", "none");
-                database.ref("/user2").onDisconnect().set({
-                    username: "Waiting for player.",
-                    choice: "none",
-                    wins: 0,
-                    status: false
-                });
-                database.ref("/user1").onDisconnect().set({
-                    username: "Waiting for player.",
-                    choice: "none",
-                    wins: 0,
-                    status: false
-                });
+
                 database.ref().update({
                     status: true
                 });
@@ -98,18 +87,53 @@ $(document).ready(function () {
     database.ref().onDisconnect().update({
         status: false,
     });
-
+    database.ref("/user1").onDisconnect().set({
+        username: "Waiting for player.",
+        choice: "none",
+        wins: 0,
+        status: false
+    });
+    database.ref("/user2").onDisconnect().set({
+        username: "Waiting for player.",
+        choice: "none",
+        wins: 0,
+        status: false
+    });
 
 
     //Click events for RPS buttons
-    $(".game-btn").on("click", function () {
+    $(".game-button").on("click", function () {
         let choiceLocal = $(this).attr("value");
         database.ref(myUser).update({
             choice: choiceLocal
         });
+        database.ref(myUser).update({
+            status: true
+        })
 
-        $(".game-btn").css("display", "none")
-        game()
+        $(".game-button").css("display", "none");
+        if (statusUser1 == true && statusUser2 == true) {
+            setTimeout(function () {
+                game()
+            }, 1000)
+            winsUser1 = 0;
+            winsUser2 = 0;
+            setTimeout(function () {
+                database.ref().update({
+                    status: true
+                });
+
+                database.ref("/user1").update({
+                    status: false,
+                    choice: "none"
+                });
+                database.ref("/user2").update({
+                    status: false,
+                    choice: "none"
+                });
+            }, 1000)
+        }
+        choiceLocal = undefined;
     });
 
     //See if both made a choice
@@ -123,79 +147,65 @@ $(document).ready(function () {
 
     //game logic
     function game(desc) {
-        if (choiceUser1 != undefined && choiceUser2 != undefined) {
-            console.log(choiceUser1 + choiceUser2);
+        console.log("status 1" + statusUser1);
+        console.log("status 2" + statusUser2);
 
-            switch (choiceUser1 + choiceUser2) {
-                case '11':
-                    desc = "tie!";
-                    break;
-                case '22':
-                    desc = "tie";
-                    break;
-                case '33':
-                    desc = "tie";
-                    break;
-                case '12':
-                    desc = "user2";
-                    break;
-                case '21':
-                    desc = "user1";
-                    break;
-                case '13':
-                    desc = "user1";
-                    break;
-                case '31':
-                    desc = "user2";
-                    break;
-                case '23':
-                    desc = "user2";
-                    break;
-                case '32':
-                    desc = "user1";
-                    break;
-
-            }
-            database.ref().update({
-                status: false
-            })
-
-            setTimeout(function () {
-                database.ref().update({
-                    status: true
-                })
-            }, 2000);
-
-
-            if (desc === "user1") {
-                winsUser1++;
-                database.ref("/user1").update({
-                    wins: winsUser1
-                })
-            } else if (desc === "user2") {
-                winsUser2++;
-                database.ref("/user2").update({
-                    wins: winsUser2
-                })
-
-            } else {
-                winsUser1++;
-                winsUser2++;
-                database.ref("/user1").update({
-                    wins: winsUser1,
-                })
-                database.ref("/user2").update({
-                    wins: winsUser2,
-                })
-            }
+        switch (choiceUser1 + choiceUser2) {
+            case '11':
+                desc = "tie!";
+                break;
+            case '22':
+                desc = "tie";
+                break;
+            case '33':
+                desc = "tie";
+                break;
+            case '12':
+                desc = "user2";
+                break;
+            case '21':
+                desc = "user1";
+                break;
+            case '13':
+                desc = "user1";
+                break;
+            case '31':
+                desc = "user2";
+                break;
+            case '23':
+                desc = "user2";
+                break;
+            case '32':
+                desc = "user1";
+                break;
 
         }
+        console.log("game runns")
 
-        choiceUser1 = undefined;
-        choiceUser2 = undefined;
+        if (desc === "user1") {
+            winsUser1++;
+            database.ref("/user1").update({
+                wins: winsUser1
+            })
+        } else if (desc === "user2") {
+            winsUser2++;
+            database.ref("/user2").update({
+                wins: winsUser2
+            })
 
+        } else {
+            winsUser1++;
+            winsUser2++;
+            database.ref("/user1").update({
+                wins: winsUser1,
+            })
+            database.ref("/user2").update({
+                wins: winsUser2,
+            })
+        }
     }
-    //chat function
+
+    // chat function
     document.onkeyup = function (key) {
         let checkInput = key
         if (checkInput.keyCode == 13 && myName != undefined) {
@@ -205,13 +215,10 @@ $(document).ready(function () {
                 message: $(".chat-line").val(),
                 timeAdded: firebase.database.ServerValue.TIMESTAMP
             });
+            $(".chat-line").attr("placeholder", "");
         }
     };
     database.ref("/chat").orderByChild("dateAdded").limitToLast(1).on("child_added", function (snapshot) {
-        console.log("listened");
-        console.log(snapshot.val().username);
-        console.log(snapshot.val().message);
-        console.log(snapshot.val().timeAdded);
 
         let newMessage = $("<td>");
         let newName = $("<td>");
@@ -227,11 +234,10 @@ $(document).ready(function () {
             .append(newName)
             .append(newMessage)
             .append(moment(snapshot.val().timeAdded).format('LT'));
-
         $("#chat-table").append(newRow);
 
     })
 
 
-    // console.log($(".chatline").val());
+    console.log($(".chatline").val());
 });
