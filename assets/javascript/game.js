@@ -238,7 +238,7 @@ $(document).ready(function () {
                 message: $(".chat-line").val(),
                 timeAdded: firebase.database.ServerValue.TIMESTAMP
             });
-            $(".chat-line").attr("placeholder", "");
+            $(".chat-line").val("");
         }
     };
     database.ref("/chat").orderByChild("dateAdded").limitToLast(1).on("child_added", function (snapshot) {
