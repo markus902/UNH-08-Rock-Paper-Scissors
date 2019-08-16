@@ -205,11 +205,13 @@ $(document).ready(function () {
 
         if (desc === "user1") {
             winsUser1++;
+            alert("Player 1 wins!");
             database.ref("/user1").update({
                 wins: winsUser1
             })
         } else if (desc === "user2") {
             winsUser2++;
+            alert("Player 2 wins!");
             database.ref("/user2").update({
                 wins: winsUser2
             })
@@ -217,6 +219,7 @@ $(document).ready(function () {
         } else {
             winsUser1++;
             winsUser2++;
+            alert("Tie!");
             database.ref("/user1").update({
                 wins: winsUser1,
             })
