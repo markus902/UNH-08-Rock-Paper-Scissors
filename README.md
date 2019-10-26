@@ -1,22 +1,29 @@
 # Rock-Paper-Scissors Online Multiplayer Game
 
+Deployment link: https://markus902.github.io/UNH-08-Rock-Paper-Scissors/
+
 ### Scope
 
-* This project focuses on the use of Firebase. JQuery with a Bootstrap front-end using animations.
+This project focuses on the use of Firebase to create a Rock-Paper_scissors Game for 2 Players.
 
-### Rules
+### Code Structure
 
-* By clicking on one of the characters, the player will first select his fighter and with a second click the opponent. By clicking the attack button multiple times the player will attack the opponent. Each character has different health and attack points and each attack will demage the characters. The players character gains experience with each attack which results in stronger attacks. The player has to defeat all opponents in order to win.
+When the first player visits the page, the app asks to put in the name and automatically assigns the player number 1 and waits until the second player arrives and enters his/her name. The names are stored in Firebase. In the next step the app displays the 3 choices to be made. After both palyers entered their choice the app stores the values in Firebase and evaluates the outcome with a switch statement. The winner will be prompted via alert and the score of the round is pushed to Firebase. The app also provides a chat function wich pushes the entries with timestamps to Firebase. The entries are displayed with converted time in the chat window. 
+If one of the players looses the connection to firebase the opponent will be notifid with a message.
+
 
 ### Features
 
-* Dynamic manipulation of the DOM.
+* JQuery
 
-* Game logic.
+* Moment.js
 
-* Alerts for game progress.
+* Materialize
 
-* Responsive design.
+* Game logic
 
+* Alerts for game progress
 
-To be created......
+* Responsive design
+
+* Firebase
